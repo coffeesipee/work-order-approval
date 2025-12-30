@@ -21,6 +21,9 @@ return new class extends Migration {
             $table->enum('status', ['DRAFT', 'SUBMITTED', 'APPROVED', 'REJECTED', 'IN_PROGRESS', 'COMPLETED'])->default('SUBMITTED');
             $table->timestampTz('completed_at')->nullable();
             $table->timestampTz('rejected_at')->nullable();
+            $table->foreignId('vendor_id')->nullable()->constrained('vendors')->nullOnDelete();
+            $table->foreignId('unit_id')->nullable()->constrained('units')->nullOnDelete();
+            $table->foreignId('region_id')->nullable()->constrained('regions')->nullOnDelete();
             $table->timestampsTz();
         });
 

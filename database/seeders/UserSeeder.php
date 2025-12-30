@@ -14,13 +14,13 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        Role::create([
+        Role::insertOrIgnore([
             'id' => 1,
             'name' => 'Superadmin',
             'type' => Role::TYPE_SUPERADMIN
         ]);
 
-        User::create([
+        User::insertOrIgnore([
             'id' => 1,
             'email' => 'superadmin@app.com',
             'name' => 'Superadmin',

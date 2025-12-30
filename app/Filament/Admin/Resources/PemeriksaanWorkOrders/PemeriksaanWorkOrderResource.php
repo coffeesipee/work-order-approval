@@ -9,6 +9,7 @@ use App\Filament\Admin\Resources\PemeriksaanWorkOrders\Pages\ViewPemeriksaanWork
 use App\Filament\Admin\Resources\PemeriksaanWorkOrders\Schemas\PemeriksaanWorkOrderForm;
 use App\Filament\Admin\Resources\PemeriksaanWorkOrders\Schemas\PemeriksaanWorkOrderInfolist;
 use App\Filament\Admin\Resources\PemeriksaanWorkOrders\Tables\PemeriksaanWorkOrdersTable;
+use App\Models\Damage;
 use App\Models\PemeriksaanWorkOrder;
 use App\Models\WorkOrder;
 use BackedEnum;
@@ -20,14 +21,14 @@ use UnitEnum;
 
 class PemeriksaanWorkOrderResource extends Resource
 {
-    protected static ?string $model = WorkOrder::class;
+    protected static ?string $model = Damage::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
-    protected static ?string $navigationLabel = 'Pemeriksaan';
+    protected static ?string $navigationLabel = 'Lapor Kerusakan';
     protected static UnitEnum|string|null $navigationGroup = 'Work Order';
     protected static ?string $recordTitleAttribute = 'title';
-    protected static ?string $modelLabel = 'Pemeriksaan';
-    protected static ?string $pluralLabel = 'Pemeriksaan';
+    protected static ?string $modelLabel = 'Lapor Kerusakan';
+    protected static ?string $pluralLabel = 'Lapor Kerusakan';
 
 
     public static function form(Schema $schema): Schema

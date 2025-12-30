@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 
 class User extends Authenticatable implements FilamentUser
 {
@@ -30,6 +31,9 @@ class User extends Authenticatable implements FilamentUser
         'email',
         'password',
         'role_id',
+        'unit_id',
+        'region_id',
+        'handsign_file'
     ];
 
     /**
@@ -55,8 +59,23 @@ class User extends Authenticatable implements FilamentUser
         ];
     }
 
+    public function getHandsignFileUrlAttribute()
+    {
+        return $this->handsign_file ? Storage::temporaryUrl($this->handsign_file, now()->addMinutes(5)) : null;
+    }
+
     public function role(): BelongsTo
     {
         return $this->belongsTo(Role::class);
+    }
+
+    public function unit(): BelongsTo
+    {
+        return $this->belongsTo(Unit::class);
+    }
+
+    public function region(): BelongsTo
+    {
+        return $this->belongsTo(Region::class);
     }
 }

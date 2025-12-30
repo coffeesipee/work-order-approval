@@ -12,6 +12,7 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Infolists\Components\TextEntry;
@@ -46,11 +47,27 @@ class UserResource extends Resource
                     ->required(),
                 TextInput::make('password')
                     ->label('Kata Sandi')
-                    ->password()
-                    ->required(),
+                    ->hiddenOn('edit')
+                    ->password(),
+                Select::make('unit_id')
+                    ->relationship('unit', 'name')
+                    ->preload()
+                    ->searchable()
+                    ->label('Unit'),
+                Select::make('region_id')
+                    ->relationship('region', 'name')
+                    ->preload()
+                    ->searchable()
+                    ->label('Region'),
                 Select::make('role_id')
                     ->relationship('role', 'name')
+                    ->preload()
+                    ->searchable()
                     ->label('Role')
+                    ->required(),
+                FileUpload::make('handsign_file')
+                    ->label('Tanda Tangan')
+                    ->image()
                     ->required(),
             ]);
     }
@@ -89,6 +106,10 @@ class UserResource extends Resource
                     ->searchable(),
                 TextColumn::make('role.name')
                     ->label('Role'),
+                TextColumn::make('unit.name')
+                    ->label('Unit'),
+                TextColumn::make('region.name')
+                    ->label('Region'),
                 TextColumn::make('created_at')
                     ->label('Dibuat Pada')
                     ->dateTime()

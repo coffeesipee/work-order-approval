@@ -31,7 +31,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->colors([
-                'primary' => Color::Default ,
+                // 'primary' => Color::Default ,
             ])
             ->spa()
             ->default()
@@ -58,6 +58,8 @@ class AdminPanelProvider extends PanelProvider
                 // AccountWidget::class,
                 // FilamentInfoWidget::class,
             ])
+            ->databaseNotifications()
+            ->globalSearch(false)
             ->login()
             ->middleware([
                 EncryptCookies::class,

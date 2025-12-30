@@ -2,6 +2,9 @@
 
 namespace App\Filament\Admin\Resources\WorkOrders\Schemas;
 
+use App\Models\Damage;
+use App\Models\Role;
+use App\Models\User;
 use App\Models\WorkOrder;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
@@ -24,14 +27,53 @@ class WorkOrderForm
                     Step::make('Informasi Umum')
                         ->completedIcon(Heroicon::HandThumbUp)
                         ->schema([
+                            Select::make('damage_id')
+                                ->label('Kerusakan')
+                                ->required(false)
+                                ->searchable()
+                                ->preload()
+                                ->afterStateUpdated(function ($state, callable $set) {
+                                    $damage = Damage::with(['damageItems'])->find($state);
+                                    $set('title', $damage->title);
+                                    $set('description', $damage->description);
+
+                                    $items = [];
+                                    $attachments = [];
+                                    foreach ($damage->damageItems as $item) {
+                                        $items[] = [
+                                            'item_name' => $item->name,
+                                            'item_description' => $item->item_description,
+                                            'item_note' => '',
+                                            'item_quantity' => $item->quantity,
+                                            'item_unit' => $item->unit,
+                                        ];
+                                    }
+
+                                    foreach ($damage->damageProofs as $proof) {
+                                        $attachments[] = [
+                                            'file_name' => [$proof->image],
+                                        ];
+                                    }
+                                    $set('items', $items);
+                                    $set('attachments', $attachments);
+                                })
+                                ->reactive()
+                                ->live()
+                                ->options(
+                                    Damage::where('status', 'approved')
+                                        ->where('unit_id', auth()->user()->unit_id)
+                                        ->pluck('ticket_number', 'id')
+                                ),
                             TextInput::make('title')
                                 ->required()
+                                ->reactive()
                                 ->label('Judul')
                                 ->columnSpanFull()
                                 ->maxLength(100),
                             RichEditor::make('description')
                                 ->label('Deskripsi')
                                 ->required()
+                                ->reactive()
                                 ->columnSpanFull()
                                 ->maxLength(255),
                             Select::make('work_order_type')
@@ -69,14 +111,14 @@ class WorkOrderForm
                                     Select::make('item_unit')
                                         ->label('Satuan Item')
                                         ->options([
-                                            'PCS' => 'PCS',
-                                            'KG' => 'KG',
-                                            'L' => 'L',
-                                            'M' => 'M',
-                                            'M2' => 'M2',
-                                            'M3' => 'M3',
-                                            'MT' => 'MT',
-                                            'T' => 'T',
+                                            'pcs' => 'PCS',
+                                            'kg' => 'KG',
+                                            'l' => 'L',
+                                            'm' => 'M',
+                                            'm2' => 'M2',
+                                            'm3' => 'M3',
+                                            'mt' => 'MT',
+                                            't' => 'T',
                                         ]),
                                 ])->columnSpanFull(),
                         ]),
@@ -108,6 +150,13 @@ class WorkOrderForm
                                 ->schema([
                                     Select::make('approver_id')
                                         ->label('PIC')
+                                        ->options(function () {
+                                            $role = Role::where('type', 'APPROVER')->pluck('id')->toArray();
+                                            $users = User::whereHas('role', function ($query) use ($role) {
+                                                $query->whereIn('role_id', $role);
+                                            })->pluck('name', 'id')->toArray();
+                                            return $users;
+                                        })
                                         ->required(),
                                 ])
                         ])

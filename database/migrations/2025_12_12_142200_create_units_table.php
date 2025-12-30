@@ -15,7 +15,12 @@ return new class extends Migration {
             $table->string('name');
             $table->text('description')->nullable();
             $table->foreignId('region_id')->constrained()->cascadeOnDelete();
+            $table->integer('budgets')->nullable();
             $table->timestamps();
+        });
+
+        Schema::table('users', function (Blueprint $table) {
+            $table->foreignId('unit_id')->nullable()->constrained('units')->nullOnDelete();
         });
     }
 
@@ -25,5 +30,10 @@ return new class extends Migration {
     public function down(): void
     {
         Schema::dropIfExists('units');
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropForeign(['unit_id']);
+            $table->dropIndex(['unit_id']);
+            $table->dropColumn('unit_id');
+        });
     }
 };

@@ -14,7 +14,12 @@ return new class extends Migration {
             $table->id();
             $table->string('name');
             $table->text('description')->nullable();
+            $table->integer('budgets')->unsigned()->nullable();
             $table->timestamps();
+        });
+
+        Schema::table('users', function (Blueprint $table) {
+            $table->foreignId('region_id')->nullable()->constrained('regions')->nullOnDelete();
         });
     }
 
@@ -24,5 +29,10 @@ return new class extends Migration {
     public function down(): void
     {
         Schema::dropIfExists('regions');
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropForeign(['region_id']);
+            $table->dropIndex(['region_id']);
+            $table->dropColumn('region_id');
+        });
     }
 };

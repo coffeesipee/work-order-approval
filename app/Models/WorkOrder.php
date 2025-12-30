@@ -6,6 +6,19 @@ use Illuminate\Database\Eloquent\Model;
 
 class WorkOrder extends Model
 {
+    protected static function booted(): void
+    {
+        static::created(function (WorkOrder $workOrder) {
+            // WorkOrderHistory::create([
+            //     'work_order_id' => $workOrder->id,
+            //     'user_id' => $workOrder->requester_id,
+            //     'before_status' => $workOrder->status,
+            //     'after_status' => $workOrder->status,
+            //     'action' => 'CREATE',
+            // ]);
+        });
+    }
+
     const STATUS_DRAFT = 'DRAFT';
     const STATUS_SUBMITTED = 'SUBMITTED';
     const STATUS_IN_PROGRESS = 'IN_PROGRESS';
@@ -27,7 +40,13 @@ class WorkOrder extends Model
         'completed_at',
         'rejected_at',
         'reject_reason',
+        'damage_id',
     ];
+
+    public function damage()
+    {
+        return $this->belongsTo(Damage::class);
+    }
 
     public function attachments()
     {
