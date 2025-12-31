@@ -41,6 +41,11 @@ class WorkOrder extends Model
         'rejected_at',
         'reject_reason',
         'damage_id',
+        'work_order_type',
+    ];
+
+    protected $casts = [
+        'work_order_type' => 'array',
     ];
 
     public function damage()

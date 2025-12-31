@@ -79,6 +79,8 @@ class WorkOrderForm
                             Select::make('work_order_type')
                                 ->label('Tipe Pekerjaan')
                                 ->required()
+                                ->multiple()
+                                ->searchable()
                                 ->options([
                                     WorkOrder::TYPE_PEMERIKSAAN => 'Pemeriksaan',
                                     WorkOrder::TYPE_PERBAIKAN => 'Perbaikan',

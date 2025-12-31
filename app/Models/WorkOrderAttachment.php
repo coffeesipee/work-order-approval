@@ -9,6 +9,9 @@ class WorkOrderAttachment extends Model
     protected $fillable = [
         'work_order_id',
         'file_name',
+        'file_size',
+        'attachment_type',
+        'notes',
     ];
 
     public function workOrder()
